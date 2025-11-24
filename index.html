@@ -327,8 +327,9 @@
       // Load news when page loads
       document.addEventListener('DOMContentLoaded', loadLiveSportsNews);
 
-      // Refresh news every 5 minutes
-      setInterval(loadLiveSportsNews, 5 * 60 * 1000);
+      // Refresh news every 30 minutes (server-side cache is 1 hour)
+      // This keeps us well within NewsAPI free tier of 100 requests/day
+      setInterval(loadLiveSportsNews, 30 * 60 * 1000);
     </script>
         </div>
 
