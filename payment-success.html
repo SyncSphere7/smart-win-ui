@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Payment Successful - Smart Win</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="theme/soccer/fonts/icomoon/style.css">
+  <link rel="stylesheet" href="theme/soccer/css/bootstrap/bootstrap.css">
+  <link rel="stylesheet" href="theme/soccer/css/style.css">
+
+  <style>
+    .success-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .success-card {
+      background: white;
+      border-radius: 20px;
+      padding: 50px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      text-align: center;
+      max-width: 600px;
+      margin: 20px;
+    }
+    .success-icon {
+      font-size: 80px;
+      color: #28a745;
+      margin-bottom: 20px;
+      animation: scaleIn 0.5s ease-in-out;
+    }
+    @keyframes scaleIn {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    .spinner-border {
+      width: 3rem;
+      height: 3rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="success-container">
+    <div class="success-card">
+      <div id="verifying" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+          <span class="sr-only">Verifying...</span>
+        </div>
+        <h3 class="mt-4">Verifying Your Payment...</h3>
+        <p class="text-muted">Please wait while we confirm your transaction.</p>
+      </div>
+
+      <div id="success" style="display: none;">
+        <div class="success-icon">✓</div>
+        <h2 class="mb-3">Payment Successful!</h2>
+        <p class="lead mb-4">Thank you for your payment. Your transaction has been completed successfully.</p>
+        
+        <div class="alert alert-success text-left">
+          <p class="mb-2"><strong>Transaction Details:</strong></p>
+          <p class="mb-1" id="orderRef"></p>
+          <p class="mb-1" id="amount"></p>
+          <p class="mb-0" id="status"></p>
+        </div>
+
+        <p class="text-muted mb-4">
+          A confirmation email has been sent to your registered email address. 
+          Our team will contact you within 24 hours to proceed with your consultation.
+        </p>
+
+        <a href="/" class="btn btn-primary btn-lg">
+          <i class="icon-home mr-2"></i> Return to Homepage
+        </a>
+      </div>
+
+      <div id="error" style="display: none;">
+        <div class="success-icon" style="color: #dc3545;">✗</div>
+        <h2 class="mb-3">Payment Verification Issue</h2>
+        <p class="lead mb-4" id="errorMessage">We couldn't verify your payment at this time.</p>
+        
+        <p class="text-muted mb-4">
+          Please contact our support team with your transaction reference for assistance.
+        </p>
+
+        <a href="/" class="btn btn-secondary btn-lg">
+          <i class="icon-home mr-2"></i> Return to Homepage
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Get order reference from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderRef = urlParams.get('ref');
+    const orderTrackingId = urlParams.get('OrderTrackingId');
+    const merchantRef = urlParams.get('OrderMerchantReference');
+
+    async function verifyPayment() {
+      const verifyingEl = document.getElementById('verifying');
+      const successEl = document.getElementById('success');
+      const errorEl = document.getElementById('error');
+
+      // Show verifying state
+      verifyingEl.style.display = 'block';
+
+      try {
+        if (!orderTrackingId && !orderRef) {
+          throw new Error('No transaction reference found');
+        }
+
+        // Call IPN endpoint to verify payment (this will also trigger email notification)
+        const response = await fetch(`/api/pesapal-ipn?OrderTrackingId=${orderTrackingId || orderRef}&OrderMerchantReference=${merchantRef || orderRef}`);
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // Show success
+          verifyingEl.style.display = 'none';
+          successEl.style.display = 'block';
+
+          // Update transaction details
+          document.getElementById('orderRef').textContent = `Order Reference: ${data.transactionDetails.merchant_reference || orderRef}`;
+          document.getElementById('amount').textContent = `Amount: ${data.transactionDetails.currency} ${data.transactionDetails.amount}`;
+          document.getElementById('status').textContent = `Status: ${data.status}`;
+        } else {
+          throw new Error(data.message || 'Payment verification failed');
+        }
+      } catch (error) {
+        console.error('Verification error:', error);
+        verifyingEl.style.display = 'none';
+        errorEl.style.display = 'block';
+        document.getElementById('errorMessage').textContent = error.message;
+      }
+    }
+
+    // Verify payment on page load
+    if (orderTrackingId || orderRef) {
+      verifyPayment();
+    } else {
+      // No reference found, show error
+      document.getElementById('error').style.display = 'block';
+      document.getElementById('errorMessage').textContent = 'No transaction reference found in URL.';
+    }
+  </script>
+
+</body>
+
+</html>
