@@ -1085,14 +1085,36 @@
 
     // Initialize Bootstrap tabs manually to ensure they work
     $(document).ready(function() {
+      console.log('Payment modal script loaded');
+      
       // Enable Bootstrap tab switching
       $('#paymentTabs a[data-toggle="tab"]').on('click', function(e) {
         e.preventDefault();
+        console.log('Tab clicked:', $(this).attr('href'));
         $(this).tab('show');
+      });
+
+      // Backup manual tab switching if Bootstrap fails
+      $('#paymentTabs a[data-toggle="tab"]').on('click', function(e) {
+        e.preventDefault();
+        var target = $(this).attr('href');
+        
+        // Remove active classes from all tabs
+        $('#paymentTabs .nav-link').removeClass('active');
+        $('.tab-pane').removeClass('show active');
+        
+        // Add active class to clicked tab
+        $(this).addClass('active');
+        
+        // Show target pane
+        $(target).addClass('show active');
+        
+        console.log('Manual tab switch to:', target);
       });
 
       // Also handle tab activation when modal opens
       $('#paymentModal').on('shown.bs.modal', function() {
+        console.log('Payment modal opened');
         // Ensure first tab is active
         $('#crypto-tab').tab('show');
       });
