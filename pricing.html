@@ -384,17 +384,17 @@
           <!-- Payment Method Tabs -->
           <ul class="nav nav-tabs mb-4" id="paymentTabs" role="tablist">
             <li class="nav-item">
-              <a class="nav-link active" id="crypto-tab" data-toggle="tab" href="#crypto" role="tab">
+              <a class="nav-link active" id="crypto-tab" data-toggle="tab" href="#crypto" role="tab" aria-controls="crypto" aria-selected="true">
                 <i class="icon-bitcoin"></i> Crypto (Bitcoin)
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" id="mobile-money-tab" data-toggle="tab" href="#mobileMoney" role="tab">
+              <a class="nav-link" id="mobile-money-tab" data-toggle="tab" href="#mobileMoney" role="tab" aria-controls="mobileMoney" aria-selected="false">
                 <i class="icon-smartphone"></i> Mobile Money
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" id="card-tab" data-toggle="tab" href="#card" role="tab">
+              <a class="nav-link" id="card-tab" data-toggle="tab" href="#card" role="tab" aria-controls="card" aria-selected="false">
                 <i class="icon-credit-card"></i> Visa/Mastercard
               </a>
             </li>
@@ -403,7 +403,7 @@
           <!-- Tab Content -->
           <div class="tab-content" id="paymentTabContent">
             <!-- Crypto Payment -->
-            <div class="tab-pane fade show active" id="crypto" role="tabpanel">
+            <div class="tab-pane fade show active" id="crypto" role="tabpanel" aria-labelledby="crypto-tab">
               <div class="text-center">
                 <h6 class="mb-3">Scan QR Code to Pay with Bitcoin</h6>
                 <img src="public/Bitcoin wallet.jpeg" alt="Bitcoin Payment QR Code" class="img-fluid" style="max-width: 300px; border: 2px solid #ddd; border-radius: 8px; padding: 10px;">
@@ -416,7 +416,7 @@
             </div>
 
             <!-- Mobile Money Payment -->
-            <div class="tab-pane fade" id="mobileMoney" role="tabpanel">
+            <div class="tab-pane fade" id="mobileMoney" role="tabpanel" aria-labelledby="mobile-money-tab">
               <div class="text-center">
                 <h6 class="mb-3">Mobile Money Payment via Pesapal</h6>
                 <div class="alert alert-info">
@@ -437,7 +437,7 @@
             </div>
 
             <!-- Card Payment -->
-            <div class="tab-pane fade" id="card" role="tabpanel">
+            <div class="tab-pane fade" id="card" role="tabpanel" aria-labelledby="card-tab">
               <div class="text-center">
                 <h6 class="mb-3">Visa/Mastercard Payment via Pesapal</h6>
                 <div class="alert alert-info">
