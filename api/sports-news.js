@@ -1,7 +1,7 @@
 // Vercel Serverless Function to fetch live sports news
-// Uses NewsAPI.org with caching and RSS fallback
+// Uses The Guardian API (free, production-ready)
 
-const NEWS_API_KEY = process.env.NEWS_API_KEY;
+const GUARDIAN_API_KEY = process.env.GUARDIAN_API_KEY;
 
 // In-memory cache (persists during function warm-up)
 let newsCache = {
@@ -9,12 +9,6 @@ let newsCache = {
   timestamp: 0,
   CACHE_DURATION: 60 * 60 * 1000 // 1 hour in milliseconds
 };
-
-// RSS Feed fallback sources
-const RSS_FEEDS = [
-  'https://www.espn.com/espn/rss/soccer/news',
-  'https://feeds.bbci.co.uk/sport/football/rss.xml'
-];
 
 export default async function handler(req, res) {
   // Only allow GET requests
@@ -39,37 +33,34 @@ export default async function handler(req, res) {
 
     let newsData = null;
 
-    // Try NewsAPI if key is configured
-    if (NEWS_API_KEY && NEWS_API_KEY !== 'YOUR_NEWSAPI_KEY_HERE') {
+    // Try The Guardian API if key is configured
+    if (GUARDIAN_API_KEY && GUARDIAN_API_KEY !== 'YOUR_GUARDIAN_API_KEY_HERE') {
       try {
-        // Use 'everything' endpoint with soccer/football keywords for better filtering
-        // This gives us more control over soccer-specific content
-        const apiUrl = `https://newsapi.org/v2/everything?q=(soccer OR football OR "Premier League" OR "Champions League" OR FIFA OR UEFA) AND NOT (American football OR NFL)&language=en&sortBy=publishedAt&pageSize=${pageSize}&apiKey=${NEWS_API_KEY}`;
+        // The Guardian API - football section with recent articles
+        const apiUrl = `https://content.guardianapis.com/search?section=football&show-fields=thumbnail,trailText,byline&page-size=${pageSize}&order-by=newest&api-key=${GUARDIAN_API_KEY}`;
         
         const response = await fetch(apiUrl);
         const data = await response.json();
 
-        if (response.ok && data.articles && data.articles.length > 0) {
+        if (response.ok && data.response && data.response.results && data.response.results.length > 0) {
           newsData = {
             status: 'ok',
-            totalResults: data.articles.length,
-            articles: data.articles
-              .filter(article => article.title && article.description)
-              .map(article => ({
-                title: article.title,
-                description: article.description,
-                url: article.url,
-                urlToImage: article.urlToImage || 'public/trophy.jpeg',
-                publishedAt: article.publishedAt,
-                source: article.source.name,
-                author: article.author
-              })),
-            source: 'NewsAPI'
+            totalResults: data.response.results.length,
+            articles: data.response.results.map(article => ({
+              title: article.webTitle,
+              description: article.fields?.trailText || article.webTitle,
+              url: article.webUrl,
+              urlToImage: article.fields?.thumbnail || 'theme/soccer/images/img_1.jpg',
+              publishedAt: article.webPublicationDate,
+              source: 'The Guardian',
+              author: article.fields?.byline || 'The Guardian'
+            })),
+            source: 'The Guardian API'
           };
-          console.log('Fetched fresh news from NewsAPI');
+          console.log('Fetched fresh football news from The Guardian');
         }
       } catch (error) {
-        console.error('NewsAPI error:', error.message);
+        console.error('Guardian API error:', error.message);
       }
     }
 
