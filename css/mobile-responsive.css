@@ -1,0 +1,250 @@
+/* Mobile Responsive Fixes for Smart-Win Website */
+/* Add this to ensure all pages work perfectly on mobile devices */
+
+/* Force responsive images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Fix columns that break on mobile */
+@media (max-width: 767px) {
+  
+  /* Make title sections full width on mobile */
+  .title-section {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  /* Ensure all col-6 and smaller columns become full width on mobile */
+  .col-6, .col-5, .col-4, .col-3, .col-2, .col-1 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+  
+  /* Fix blog cards and content cards */
+  .post-entry,
+  .blog-card,
+  .content-card {
+    margin-bottom: 20px;
+  }
+  
+  /* Responsive text */
+  h1 {
+    font-size: 2rem !important;
+  }
+  
+  h2 {
+    font-size: 1.75rem !important;
+  }
+  
+  h3 {
+    font-size: 1.5rem !important;
+  }
+  
+  h4, h5, h6 {
+    font-size: 1.25rem !important;
+  }
+  
+  /* Fix hero sections */
+  .hero {
+    padding: 60px 0 !important;
+  }
+  
+  .hero h1 {
+    font-size: 2rem !important;
+  }
+  
+  .hero p {
+    font-size: 1rem !important;
+  }
+  
+  /* Fix navigation */
+  .site-navigation {
+    width: 100%;
+  }
+  
+  /* Fix forms */
+  .form-control,
+  input,
+  textarea,
+  select {
+    font-size: 16px !important; /* Prevents iOS zoom */
+  }
+  
+  /* Fix tables - make them scrollable */
+  .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  table {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Fix buttons */
+  .btn {
+    padding: 12px 20px;
+    font-size: 14px;
+    white-space: normal;
+  }
+  
+  /* Fix modals on mobile */
+  .modal-dialog {
+    margin: 10px !important;
+    max-width: calc(100% - 20px) !important;
+  }
+  
+  .modal-content {
+    border-radius: 8px;
+  }
+  
+  /* Fix pricing cards */
+  .pricing-card,
+  .card {
+    margin-bottom: 20px;
+  }
+  
+  /* Reduce padding on mobile */
+  .site-section {
+    padding: 40px 0 !important;
+  }
+  
+  /* Fix footer */
+  .footer {
+    padding: 30px 0 !important;
+  }
+  
+  .footer .col-md-3,
+  .footer .col-md-4,
+  .footer .col-md-6 {
+    margin-bottom: 30px;
+  }
+  
+  /* Fix sidebar */
+  .sidebar {
+    margin-top: 40px;
+  }
+  
+  /* Prevent horizontal scroll */
+  body, html {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+  }
+  
+  .container,
+  .container-fluid {
+    overflow-x: hidden !important;
+  }
+  
+  /* Fix wide content */
+  .row {
+    margin-left: -15px;
+    margin-right: -15px;
+  }
+  
+  .col, [class*="col-"] {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  /* Fix QR code images in payment modal */
+  .modal-body img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  
+  /* Fix carousel on mobile */
+  .owl-carousel .owl-item img {
+    width: 100%;
+    height: auto;
+  }
+  
+  /* Fix video embeds */
+  iframe,
+  embed,
+  object,
+  video {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  
+  /* Responsive video wrapper */
+  .video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    height: 0;
+    overflow: hidden;
+  }
+  
+  .video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* Tablet fixes (768px - 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+  
+  .col-md-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+  
+  .col-md-4 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+  
+  .col-md-3 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+  }
+  
+  h2 {
+    font-size: 2rem;
+  }
+}
+
+/* Small mobile devices (max 375px) */
+@media (max-width: 375px) {
+  .container {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  
+  h1 {
+    font-size: 1.75rem !important;
+  }
+  
+  h2 {
+    font-size: 1.5rem !important;
+  }
+  
+  .btn {
+    font-size: 13px;
+    padding: 10px 15px;
+  }
+}
+
+/* Landscape mobile orientation */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero {
+    padding: 40px 0 !important;
+  }
+  
+  .modal-dialog {
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+  }
+}
