@@ -1001,6 +1001,83 @@
       }
     });
 
+    // Pesapal Payment Integration
+    async function initiatePesapalPayment(paymentType) {
+      // Get user details first
+      const firstName = prompt('Enter your First Name:');
+      if (!firstName) return;
+      
+      const lastName = prompt('Enter your Last Name:');
+      if (!lastName) return;
+      
+      const email = prompt('Enter your Email Address:');
+      if (!email || !email.includes('@')) {
+        alert('Please enter a valid email address');
+        return;
+      }
+      
+      const phoneNumber = prompt('Enter your Phone Number (with country code, e.g., +254712345678):');
+      if (!phoneNumber) return;
+
+      // Show loading state in modal
+      const modalBody = document.querySelector('#paymentModal .modal-body');
+      const originalContent = modalBody.innerHTML;
+      modalBody.innerHTML = `
+        <div class="text-center py-5">
+          <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <span class="sr-only">Processing...</span>
+          </div>
+          <h5 class="mt-4">Initiating Secure Payment...</h5>
+          <p class="text-muted">Please wait while we connect you to Pesapal payment gateway.</p>
+        </div>
+      `;
+
+      try {
+        // Call Pesapal API
+        const response = await fetch('/api/pesapal-payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            amount: 100,
+            currency: 'USD',
+            description: `Smart Win Consultation Fee - ${paymentType === 'mobile' ? 'Mobile Money' : 'Card Payment'}`,
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            phoneNumber: phoneNumber,
+            paymentMethod: paymentType
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.redirectUrl) {
+          // Show success message before redirect
+          modalBody.innerHTML = `
+            <div class="text-center py-5">
+              <div style="font-size: 60px; color: #28a745;">✓</div>
+              <h5 class="mt-3">Redirecting to Payment Gateway...</h5>
+              <p class="text-muted">You will be redirected to complete your payment securely.</p>
+            </div>
+          `;
+          
+          // Redirect to Pesapal payment page after 1 second
+          setTimeout(() => {
+            window.location.href = result.redirectUrl;
+          }, 1000);
+        } else {
+          throw new Error(result.message || 'Payment initiation failed');
+        }
+      } catch (error) {
+        // Restore original content
+        modalBody.innerHTML = originalContent;
+        alert('Payment Error: ' + error.message + '\n\nPlease try again or contact support at info@smartwinofficial.co.uk');
+        console.error('Pesapal payment error:', error);
+      }
+    }
+
     // Function to open payment modal (will be called by payment buttons)
     function openPaymentModal() {
       $('#paymentModal').modal('show');
