@@ -659,6 +659,21 @@
     function openPaymentModal() {
       $('#paymentModal').modal('show');
     }
+
+    // Initialize Bootstrap tabs manually to ensure they work
+    $(document).ready(function() {
+      // Enable Bootstrap tab switching
+      $('#paymentTabs a[data-toggle="tab"]').on('click', function(e) {
+        e.preventDefault();
+        $(this).tab('show');
+      });
+
+      // Also handle tab activation when modal opens
+      $('#paymentModal').on('shown.bs.modal', function() {
+        // Ensure first tab is active
+        $('#crypto-tab').tab('show');
+      });
+    });
   </script>
 
 </body>
