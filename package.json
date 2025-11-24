@@ -1,0 +1,9 @@
+{
+  "name": "smart-win-ui",
+  "version": "1.0.0",
+  "description": "Smart-Win Premium Match Intelligence Platform",
+  "type": "module",
+  "dependencies": {
+    "resend": "^3.0.0"
+  }
+}

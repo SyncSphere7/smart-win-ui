@@ -416,7 +416,7 @@
       <div class="container">
         <div class="row">
           <div class="col-6 title-section">
-            <h2 class="heading">Videos</h2>
+            <h2 class="heading">Latest Football Videos</h2>
           </div>
           <div class="col-6 text-right">
             <div class="custom-nav">
@@ -427,92 +427,114 @@
           </div>
         </div>
 
+        <!-- Loading state -->
+        <div id="videos-loading" class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading videos...</span>
+          </div>
+          <p class="text-white-50 mt-3">Loading latest football videos...</p>
+        </div>
 
-        <div class="owl-4-slider owl-carousel">
-          <div class="item">
-            <div class="video-media">
-              <img src="theme/soccer/images/img_1.jpg" alt="Image" class="img-fluid">
-              <a href="https://vimeo.com/139714818" class="d-flex play-button align-items-center" data-fancybox>
-                <span class="icon mr-3">
-                  <span class="icon-play"></span>
-                </span>
-                <div class="caption">
-                  <h3 class="m-0">Dogba set for Juvendu return?</h3>
-                </div>
-              </a>
-            </div>
-          </div>
-          <div class="item">
-            <div class="video-media">
-              <img src="theme/soccer/images/img_2.jpg" alt="Image" class="img-fluid">
-              <a href="https://vimeo.com/139714818" class="d-flex play-button align-items-center" data-fancybox>
-                <span class="icon mr-3">
-                  <span class="icon-play"></span>
-                </span>
-                <div class="caption">
-                  <h3 class="m-0">Kai Nets Double To Secure Comfortable Away Win</h3>
-                </div>
-              </a>
-            </div>
-          </div>
-          <div class="item">
-            <div class="video-media">
-              <img src="theme/soccer/images/img_3.jpg" alt="Image" class="img-fluid">
-              <a href="https://vimeo.com/139714818" class="d-flex play-button align-items-center" data-fancybox>
-                <span class="icon mr-3">
-                  <span class="icon-play"></span>
-                </span>
-                <div class="caption">
-                  <h3 class="m-0">Romolu to stay at Real Nadrid?</h3>
-                </div>
-              </a>
-            </div>
-          </div>
-
-          <div class="item">
-            <div class="video-media">
-              <img src="theme/soccer/images/img_1.jpg" alt="Image" class="img-fluid">
-              <a href="https://vimeo.com/139714818" class="d-flex play-button align-items-center" data-fancybox>
-                <span class="icon mr-3">
-                  <span class="icon-play"></span>
-                </span>
-                <div class="caption">
-                  <h3 class="m-0">Dogba set for Juvendu return?</h3>
-                </div>
-              </a>
-            </div>
-          </div>
-          <div class="item">
-            <div class="video-media">
-              <img src="theme/soccer/images/img_2.jpg" alt="Image" class="img-fluid">
-              <a href="https://vimeo.com/139714818" class="d-flex play-button align-items-center" data-fancybox>
-                <span class="icon mr-3">
-                  <span class="icon-play"></span>
-                </span>
-                <div class="caption">
-                  <h3 class="m-0">Kai Nets Double To Secure Comfortable Away Win</h3>
-                </div>
-              </a>
-            </div>
-          </div>
-          <div class="item">
-            <div class="video-media">
-              <img src="theme/soccer/images/img_3.jpg" alt="Image" class="img-fluid">
-              <a href="https://vimeo.com/139714818" class="d-flex play-button align-items-center" data-fancybox>
-                <span class="icon mr-3">
-                  <span class="icon-play"></span>
-                </span>
-                <div class="caption">
-                  <h3 class="m-0">Romolu to stay at Real Nadrid?</h3>
-                </div>
-              </a>
-            </div>
-          </div>
-
+        <!-- Videos carousel (populated dynamically) -->
+        <div id="videos-carousel" class="owl-4-slider owl-carousel" style="display: none;">
+          <!-- Videos will be inserted here by JavaScript -->
         </div>
 
       </div>
     </div>
+
+    <!-- YouTube Videos Dynamic Loader Script -->
+    <script>
+      // Function to load videos from API
+      async function loadFootballVideos() {
+        const loadingEl = document.getElementById('videos-loading');
+        const carouselEl = document.getElementById('videos-carousel');
+        
+        try {
+          const response = await fetch('/api/youtube-videos?maxResults=8');
+          const data = await response.json();
+          
+          if (data.videos && data.videos.length > 0) {
+            // Clear existing content
+            carouselEl.innerHTML = '';
+            
+            // Add each video to the carousel
+            data.videos.forEach(video => {
+              const videoItem = document.createElement('div');
+              videoItem.className = 'item';
+              
+              // Truncate title if too long
+              const title = video.title.length > 60 
+                ? video.title.substring(0, 57) + '...' 
+                : video.title;
+              
+              videoItem.innerHTML = `
+                <div class="video-media">
+                  <img src="${video.thumbnail}" alt="${video.title}" class="img-fluid" loading="lazy">
+                  <a href="${video.url}" target="_blank" rel="noopener noreferrer" class="d-flex play-button align-items-center">
+                    <span class="icon mr-3">
+                      <span class="icon-play"></span>
+                    </span>
+                    <div class="caption">
+                      <h3 class="m-0">${title}</h3>
+                      <small class="text-white-50">${video.channelTitle}</small>
+                    </div>
+                  </a>
+                </div>
+              `;
+              
+              carouselEl.appendChild(videoItem);
+            });
+            
+            // Hide loading, show carousel
+            loadingEl.style.display = 'none';
+            carouselEl.style.display = 'block';
+            
+            // Initialize Owl Carousel if not already initialized
+            if (typeof $.fn.owlCarousel !== 'undefined') {
+              $(carouselEl).owlCarousel({
+                loop: true,
+                autoplay: false,
+                margin: 30,
+                nav: false,
+                dots: false,
+                responsive: {
+                  0: { items: 1 },
+                  600: { items: 2 },
+                  1000: { items: 4 }
+                }
+              });
+              
+              // Connect custom nav buttons
+              $('.js-custom-prev-v2').click(function(e) {
+                e.preventDefault();
+                $(carouselEl).trigger('prev.owl.carousel');
+              });
+              $('.js-custom-next-v2').click(function(e) {
+                e.preventDefault();
+                $(carouselEl).trigger('next.owl.carousel');
+              });
+            }
+            
+            console.log(`Loaded ${data.videos.length} videos from ${data.source}`);
+          } else {
+            throw new Error('No videos found');
+          }
+        } catch (error) {
+          console.error('Error loading videos:', error);
+          loadingEl.innerHTML = `
+            <p class="text-white-50">Unable to load videos at this time.</p>
+            <p class="text-white-50 small">Please check back later.</p>
+          `;
+        }
+      }
+      
+      // Load videos when page is ready
+      document.addEventListener('DOMContentLoaded', loadFootballVideos);
+      
+      // Auto-refresh videos every 2 hours
+      setInterval(loadFootballVideos, 2 * 60 * 60 * 1000);
+    </script>
 
     <div class="container site-section">
       <div class="row">
