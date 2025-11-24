@@ -181,8 +181,8 @@
       <div class="container">
         <div class="row">
           <div class="col-12 title-section">
-            <h2 class="heading">Latest Sports News</h2>
-            <p class="text-muted"><small><i class="icon-refresh"></i> Updated in real-time</small></p>
+            <h2 class="heading">Latest Football News</h2>
+            <p class="text-muted"><small><i class="icon-refresh"></i> Live updates from world football</small></p>
           </div>
         </div>
         <div class="row no-gutters" id="liveNewsContainer">
@@ -191,7 +191,7 @@
             <div class="spinner-border text-primary" role="status">
               <span class="sr-only">Loading news...</span>
             </div>
-            <p class="mt-3 text-muted">Loading latest sports news...</p>
+            <p class="mt-3 text-muted">Loading latest football news...</p>
           </div>
         </div>
       </div>
@@ -204,7 +204,7 @@
         const container = document.getElementById('liveNewsContainer');
         
         try {
-          const response = await fetch('/api/sports-news?category=sports&pageSize=3');
+          const response = await fetch('/api/sports-news?pageSize=3');
           const data = await response.json();
 
           if (data.status === 'ok' && data.articles && data.articles.length > 0) {

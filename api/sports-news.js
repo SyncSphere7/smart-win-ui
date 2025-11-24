@@ -35,14 +35,16 @@ export default async function handler(req, res) {
     }
 
     // Get query parameters
-    const { category = 'sports', country = 'us', pageSize = 6 } = req.query;
+    const { pageSize = 6 } = req.query;
 
     let newsData = null;
 
     // Try NewsAPI if key is configured
     if (NEWS_API_KEY && NEWS_API_KEY !== 'YOUR_NEWSAPI_KEY_HERE') {
       try {
-        const apiUrl = `https://newsapi.org/v2/top-headlines?category=${category}&country=${country}&pageSize=${pageSize}&apiKey=${NEWS_API_KEY}`;
+        // Use 'everything' endpoint with soccer/football keywords for better filtering
+        // This gives us more control over soccer-specific content
+        const apiUrl = `https://newsapi.org/v2/everything?q=(soccer OR football OR "Premier League" OR "Champions League" OR FIFA OR UEFA) AND NOT (American football OR NFL)&language=en&sortBy=publishedAt&pageSize=${pageSize}&apiKey=${NEWS_API_KEY}`;
         
         const response = await fetch(apiUrl);
         const data = await response.json();
